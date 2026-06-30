@@ -1,0 +1,97 @@
+"""
+===============================================================================
+Exercise Detection Service
+===============================================================================
+
+Service layer for managing exercise detection across multiple insulin pumps.
+
+Responsibilities
+----------------
+- Maintain one ExerciseDetector per device
+- Process incoming telemetry
+- Return exercise events
+
+Author : Debjyoti Saha
+Version : 1.0
+===============================================================================
+"""
+
+from typing import Dict, Optional
+
+from exercise_config import DEFAULT_EXERCISE_CONFIG
+from exercise_detection_algo import ExerciseDetector, ExerciseDecision
+
+
+class ExerciseDetectionService:
+
+    def __init__(self, config=DEFAULT_EXERCISE_CONFIG):
+
+        self.config = config
+
+        # One detector per device
+        self.detectors: Dict[str, ExerciseDetector] = {}
+
+    # =====================================================================
+
+    def get_detector(self, device_id: str) -> ExerciseDetector:
+        """
+        Return detector for a device.
+        Creates one if it doesn't exist.
+        """
+
+        if device_id not in self.detectors:
+
+            self.detectors[device_id] = ExerciseDetector(self.config)
+
+        return self.detectors[device_id]
+
+    # =====================================================================
+
+    def update(self, device_id: str, payload: dict) -> Optional[ExerciseDecision]:
+        """
+        Process one telemetry packet.
+
+        Parameters
+        ----------
+        device_id : str
+        payload : dict
+
+        Returns
+        -------
+        ExerciseDecision
+        """
+
+        detector = self.get_detector(device_id)
+
+        decision = detector.update(payload)
+
+        return decision
+
+    # =====================================================================
+
+    def reset_device(self, device_id: str):
+        """
+        Reset detector state for one device.
+        """
+
+        if device_id in self.detectors:
+
+            del self.detectors[device_id]
+
+    # =====================================================================
+
+    def reset_all(self):
+        """
+        Reset every detector.
+        """
+
+        self.detectors.clear()
+
+    # =====================================================================
+
+    def active_devices(self):
+        """
+        Return all active device IDs.
+        """
+
+        return list(self.detectors.keys())

@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Build
+build/
+dist/
+
+# Python cache
+.pytest_cache/
+
+# Environment variables
+.env
+
+# Model files (optional)
+models/*.pkl
+
+# Database
+*.db
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
